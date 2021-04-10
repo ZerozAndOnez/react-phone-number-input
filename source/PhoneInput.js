@@ -16,6 +16,7 @@ export function createInput(defaultMetadata) {
 		smartCaret,
 		international,
 		withCountryCallingCode,
+		CustomComponent,
 		...rest
 	}, ref) {
 		// "Phone digits" includes not only "digits" but also a `+` sign.
@@ -33,8 +34,9 @@ export function createInput(defaultMetadata) {
 			metadata
 		})
 		const InputComponent = smartCaret ? InputSmart : InputBasic
+		const FinalComponent = CustomComponent ? CustomComponent : InputComponent
 		return (
-			<InputComponent
+			<FinalComponent
 				{...rest}
 				ref={ref}
 				metadata={metadata}
@@ -137,7 +139,12 @@ export function createInput(defaultMetadata) {
 		/**
 		 * `libphonenumber-js` metadata.
 		 */
-		metadata: PropTypes.object.isRequired
+		metadata: PropTypes.object.isRequired,
+		CustomComponent: PropTypes.oneOfType([
+			PropTypes.arrayOf(PropTypes.node),
+			PropTypes.node,
+			PropTypes.func
+		  ])
 	}
 
 	PhoneInput.defaultProps = {
@@ -171,7 +178,8 @@ export function createInput(defaultMetadata) {
 		/**
 		 * `libphonenumber-js` metadata.
 		 */
-		metadata: defaultMetadata
+		metadata: defaultMetadata,
+		CustomComponent: null
 	}
 
 	return PhoneInput
